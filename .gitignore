@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+build/
+coverage/
+
+# Environment variables (never commit secrets; commit .env.example instead)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Local databases (e.g. SQLite files created at runtime)
+*.sqlite
+*.sqlite3
+*.db
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
