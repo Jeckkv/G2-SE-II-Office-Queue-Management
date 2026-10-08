@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-import db from "database/database.js";
+import db from "#/database/database.js";
 
 const SEED_PATH = path.resolve(
   process.cwd(),
