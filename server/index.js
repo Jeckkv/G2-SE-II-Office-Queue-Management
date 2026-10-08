@@ -19,6 +19,11 @@ const BASE_URL = "/api/v1";
 app.use(`${BASE_URL}/tickets`, ticketRouter);
 app.use(`${BASE_URL}/services`, serviceRouter);
 
+// error handling middleware
+import errorHandler from "#/middlewares/errorHandler.js";
+
+app.use(errorHandler);
+
 // start server
 app.listen(port, () =>
   console.log(`Server listening at http://localhost:${port}`),
