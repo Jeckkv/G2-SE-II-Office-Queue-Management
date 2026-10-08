@@ -1,4 +1,8 @@
-import db from "./src/database/database.js";
+import express from "express";
 
-const tags = db.prepare("SELECT tag FROM services").all();
-console.log(tags);
+const app = express();
+const port = 3000;
+
+app.listen(port, () =>
+  console.log(`Server listening at http://localhost:${port}`),
+);
