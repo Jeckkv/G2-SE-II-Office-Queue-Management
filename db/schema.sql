@@ -54,7 +54,7 @@ CREATE TABLE tickets (
     service_id      INTEGER NOT NULL REFERENCES services(id),
     status          TEXT    NOT NULL DEFAULT 'WAITING'
                     CHECK (status in ('WAITING', 'CALLED', 'SERVED')),
-    counter_id      INTEGER REFERENCES counters(id)                          -- NULL until the ticket is called
+    counter_id      INTEGER REFERENCES counters(id),                         -- NULL until the ticket is called
     issue_date      TEXT    NOT NULL DEFAULT (date('now', 'localtime')),     -- 'YYYY-MM-DD'
     created_at      TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
     called_at       TEXT,                                                    -- NULL until the ticket is called

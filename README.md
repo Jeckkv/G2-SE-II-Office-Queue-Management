@@ -7,7 +7,8 @@ System that manages the queues of an office with several counters (e.g. a post o
 ```
 .
 ├── client/   # Frontend (React + Vite, JavaScript)
-└── server/   # Backend (not created yet)
+├── server/   # Backend (Node.js; for now only the database module)
+└── db/       # SQL scripts: schema.sql (tables) and seed.sql (initial data)
 ```
 
 ## Requirements
@@ -70,3 +71,33 @@ The backend doesn't exist yet: the backend port and every endpoint in `src/api/c
 ## Backend
 
 TODO(backend): add setup and run instructions.
+
+### Database
+
+SQLite, accessed with the [`sqlite3`](https://www.npmjs.com/package/sqlite3) package. The database file (`server/oqm.db`) is created locally and ignored by git: only the SQL scripts in `db/` are committed.
+
+Create the database, or reset it to the initial data (e.g. the morning of the demo):
+
+```bash
+cd server
+npm install
+npm run db:reset
+```
+
+This runs `db/schema.sql` (drops and recreates all tables) and then `db/seed.sql` (4 services, 4 counters, a few waiting tickets for today), and prints today's queue lengths.
+
+#### Using the database in the backend
+
+Always go through `server/db/db.js`, never open a `sqlite3.Database` directly: the module enables `PRAGMA foreign_keys = ON` on the connection (SQLite ignores foreign keys otherwise) and wraps the callback API in Promises.
+
+```js
+import { all, get, run } from './db/db.js'
+
+const services = await all('SELECT * FROM services')                // array of rows
+const service = await get('SELECT * FROM services WHERE id = ?', [id]) // one row or undefined
+const { lastID, changes } = await run('INSERT INTO tickets (code, service_id) VALUES (?, ?)', [code, serviceId])
+```
+
+- Always pass values as `?` parameters, never by concatenating strings into the SQL.
+- `DB_PATH` environment variable: use another database file. With `DB_PATH=:memory:` the database lives in memory, useful for tests: call `await resetDb()` before each test (or `resetDb({ seed: false })` for empty tables) and `await closeDb()` at the end.
+- A queue is "the `WAITING` tickets of a service with `issue_date` = today", so queues start empty every day without deleting anything.
