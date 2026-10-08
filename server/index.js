@@ -12,10 +12,12 @@ configureCORS(app);
 
 // routes
 import ticketRouter from "#/routes/tickets.js";
+import serviceRouter from "#/routes/services.js";
 
 const BASE_URL = "/api/v1";
 
 app.use(`${BASE_URL}/tickets`, ticketRouter);
+app.use(`${BASE_URL}/services`, serviceRouter);
 
 // start server
 app.listen(port, () =>
