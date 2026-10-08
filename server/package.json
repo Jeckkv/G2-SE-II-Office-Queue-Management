@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "db:reset": "node scripts/reset-db.js"
+    "db:seed": "node src/database/seed-database.js"
   },
   "dependencies": {
-    "sqlite3": "^6.0.1"
+    "better-sqlite3": "^13.0.3"
   }
 }
