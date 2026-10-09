@@ -8,7 +8,7 @@
     "dev": "nodemon index.js"
   },
   "imports": {
-    "#/*": "./src/*"
+    "#src/*": "./src/*"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

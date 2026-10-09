@@ -3,10 +3,9 @@
     "target": "ES6",
     "module": "NodeNext",
     "strict": true,
-    "baseUrl": ".",
     "checkJs": true,
     "paths": {
-      "#/*": ["src/*"]
+      "#src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*", "index.js"]
