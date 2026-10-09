@@ -1,5 +1,5 @@
-import db from "#/database/database.js";
-import Service from "#/models/services/service.js";
+import db from "#src/database/database.js";
+import Service from "#src/models/services/service.js";
 
 export default class ServiceRepository {
   /**

@@ -1,7 +1,7 @@
 import express from "express";
 import { StatusCodes } from "http-status-codes";
 
-import ServiceRepository from "#/models/services/repository.js";
+import ServiceRepository from "#src/models/services/repository.js";
 
 const router = express.Router();
 
