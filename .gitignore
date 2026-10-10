@@ -15,7 +15,7 @@ coverage/
 *.log
 
 # Local databases (e.g. SQLite files created at runtime)
-*.sqlite
+*.sqlite*
 *.sqlite3
 *.db
 
