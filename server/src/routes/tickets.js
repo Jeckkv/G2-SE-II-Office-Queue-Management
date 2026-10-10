@@ -7,11 +7,6 @@ import { NOF_SERVICES } from "#src/models/services/service-types.js";
 import TicketRepository from "#src/models/tickets/repository.js";
 import Ticket from "#src/models/tickets/ticket.js";
 
-// const TICKETS_FOR_SERVICE = Array.from(
-//   { length: NOF_SERVICES },
-//   (_) => new Queue(),
-// );
-
 const router = express.Router();
 
 /**
@@ -46,29 +41,20 @@ router.post(
     .toInt(),
   validate,
   (req, res) => {
-    const { serviceid } = req.cleanData;
+    const { serviceid } = /** @type {any} */ (req).cleanData;
 
     const ticket = Ticket.createNew(serviceid);
-    const lastID = TicketRepository.save(ticket);
-    // I'm not really a fan of this
-    ticket.id = lastID;
-    ticket.code = `S${lastID}`;
+    const { id, code } = TicketRepository.save(ticket);
+    ticket.id = id;
+    ticket.code = code;
 
-    // TICKETS_FOR_SERVICE[serviceid - 1].push(ticket.id);
-    //
-    // console.log("---");
-    // TICKETS_FOR_SERVICE.forEach((queue, idx) =>
-    //   console.log(
-    //     `Queue for service ${SERVICE_TYPES[idx + 1]}: ${queue.toString()}`,
-    //   ),
-    // );
-    // console.log("---");
-return res.status(StatusCodes.OK).json({
+    return res.status(StatusCodes.OK).json({
       message: "Successfully created ticket.",
       id: ticket.id,
       code: ticket.code,
       serviceId: ticket.serviceId,
     });
-})
+  },
+);
 
 export default router;
