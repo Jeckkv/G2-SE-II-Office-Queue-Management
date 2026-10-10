@@ -17,7 +17,7 @@ const router = express.Router();
 /**
  * Creates a new ticket for the specified service.
  */
-router.get(
+router.post(
   "/:serviceid",
   param("serviceid")
     .exists()
