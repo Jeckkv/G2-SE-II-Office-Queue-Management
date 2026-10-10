@@ -1,5 +1,5 @@
 import express from "express";
-import { param } from "express-validator";
+import { param, query } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 
 import validate from "#src/middlewares/validate.js";
@@ -13,6 +13,25 @@ import Ticket from "#src/models/tickets/ticket.js";
 // );
 
 const router = express.Router();
+
+/**
+ * Story "Call customer": returns today's called tickets, most recent first,
+ * so the display board can show which ticket goes to which counter.
+ */
+router.get(
+  "/called",
+  query("limit")
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage("Limit should be a value between 1 and 50.")
+    .toInt(),
+  validate,
+  (req, res) => {
+    const limit = /** @type {any} */ (req).cleanData.limit ?? 5;
+    const tickets = TicketRepository.getCalledToday(limit);
+    return res.status(StatusCodes.OK).json(tickets);
+  },
+);
 
 /**
  * Creates a new ticket for the specified service.
