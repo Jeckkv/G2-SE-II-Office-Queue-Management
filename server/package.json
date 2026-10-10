@@ -3,14 +3,24 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
   "scripts": {
-    "db:reset": "node scripts/reset-db.js",
+    "db:seed": "node src/database/seed-database.js",
+    "dev": "nodemon index.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "sqlite3": "^6.0.1"
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "dayjs": "^1.11.23",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "http-status-codes": "^2.3.0",
+    "nodemon": "^1.14.10"
   },
   "devDependencies": {
     "supertest": "^7.3.1",

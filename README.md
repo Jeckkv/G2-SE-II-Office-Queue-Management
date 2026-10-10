@@ -7,8 +7,7 @@ System that manages the queues of an office with several counters (e.g. a post o
 ```
 .
 ├── client/   # Frontend (React + Vite, JavaScript)
-├── server/   # Backend (Node.js; for now only the database module)
-└── db/       # SQL scripts: schema.sql (tables) and seed.sql (initial data)
+└── server/   # Backend (Node.js; for now only the database module)
 ```
 
 ## Requirements
@@ -25,25 +24,25 @@ npm install
 npm run dev
 ```
 
-The app opens at http://localhost:5173.
+The app opens at `http://localhost:5173`.
 
 ### Scripts
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Start the dev server with hot reload |
-| `npm run build` | Production build into `client/dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run lint` | Check the code with ESLint |
+| Command           | What it does                         |
+| ----------------- | ------------------------------------ |
+| `npm run dev`     | Start the dev server with hot reload |
+| `npm run build`   | Production build into `client/dist/` |
+| `npm run preview` | Serve the production build locally   |
+| `npm run lint`    | Check the code with ESLint           |
 
 ### Routes
 
-| Path | Page | Story |
-|---|---|---|
-| `/` | Role selection (customer / officer / display) | — |
-| `/customer` | Get a ticket | Story 1 |
-| `/officer` | Counter: call the next customer | Story 2 |
-| `/display` | Main display board (full screen, no header) | Story 3 |
+| Path        | Page                                          | Story   |
+| ----------- | --------------------------------------------- | ------- |
+| `/`         | Role selection (customer / officer / display) | —       |
+| `/customer` | Get a ticket                                  | Story 1 |
+| `/officer`  | Counter: call the next customer               | Story 2 |
+| `/display`  | Main display board (full screen, no header)   | Story 3 |
 
 ### Folder structure
 
@@ -91,11 +90,14 @@ This runs `db/schema.sql` (drops and recreates all tables) and then `db/seed.sql
 Always go through `server/db/db.js`, never open a `sqlite3.Database` directly: the module enables `PRAGMA foreign_keys = ON` on the connection (SQLite ignores foreign keys otherwise) and wraps the callback API in Promises.
 
 ```js
-import { all, get, run } from './db/db.js'
+import { all, get, run } from "./db/db.js";
 
-const services = await all('SELECT * FROM services')                // array of rows
-const service = await get('SELECT * FROM services WHERE id = ?', [id]) // one row or undefined
-const { lastID, changes } = await run('INSERT INTO tickets (code, service_id) VALUES (?, ?)', [code, serviceId])
+const services = await all("SELECT * FROM services"); // array of rows
+const service = await get("SELECT * FROM services WHERE id = ?", [id]); // one row or undefined
+const { lastID, changes } = await run(
+  "INSERT INTO tickets (code, service_id) VALUES (?, ?)",
+  [code, serviceId],
+);
 ```
 
 - Always pass values as `?` parameters, never by concatenating strings into the SQL.
