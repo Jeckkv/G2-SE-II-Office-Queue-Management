@@ -56,7 +56,11 @@ export function callNextCustomer(counterId) {
 
 // ---- Story 3: Call customer ----
 
-/** Main display board data, e.g. { calledTickets: [{ code, counter }], queues: [{ serviceId, length }] } */
-export function getDisplayBoard() {
-  return request('/display') // TODO(backend): confirm path and shape; may become a WebSocket
+/**
+ * Data for the main display board: today's called tickets, most recent first.
+ * @param {number} [limit=5]
+ * @returns {Promise<Array<{ id: number, code: string, serviceName: string, counterNumber: number, calledAt: string }>>}
+ */
+export function getDisplayBoard(limit = 5) {
+  return request(`/v1/tickets/called?limit=${limit}`)
 }

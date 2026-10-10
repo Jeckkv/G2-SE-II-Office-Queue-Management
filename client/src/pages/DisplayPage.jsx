@@ -1,35 +1,13 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
+
 import { getDisplayBoard } from "../api/client.js";
+import usePolling from "../hooks/usePolling.js";
+
 export default function DisplayPage() {
-  const [board, setBoard] = useState(null),
-    [error, setError] = useState("");
-  useEffect(() => {
-    let active = true;
-    const refresh = () =>
-      getDisplayBoard()
-        .then((d) => {
-          if (active) {
-            setBoard(d);
-            setError("");
-          }
-        })
-        .catch((e) => {
-          if (active) setError(e.message);
-        });
-    refresh();
-    const timer = setInterval(refresh, 5000);
-    return () => {
-      active = false;
-      clearInterval(timer);
-    };
-  }, []);
-  const calls = Array.isArray(board?.calledTickets)
-    ? board.calledTickets
-    : Array.isArray(board?.recentCalls)
-      ? board.recentCalls
-      : [];
-  const queues = Array.isArray(board?.queues) ? board.queues : [];
+  const { data: calls, error, loading } = usePolling(getDisplayBoard, 2000);
+  // The newest call is "Now calling", the others are recent calls
+  const [current, ...recent] = calls ?? [];
+
   return (
     <section className="public-board">
       <header>
@@ -41,41 +19,39 @@ export default function DisplayPage() {
           ← Back
         </Link>
       </header>
+
       {error && (
         <div role="alert" className="alert error">
-          Display unavailable: {error}
+          Connection problem, showing the last data received.
         </div>
       )}
+
       <div className="display-grid">
         <article className="panel">
-          <h2>Called numbers</h2>
-          {calls.length ? (
-            calls.map((c, i) => (
-              <div key={c.id ?? i} className="display-call">
-                <strong>{c.code || c.number || "—"}</strong>
-                <span>
-                  {c.counter?.name ||
-                    `Counter ${c.counter?.number ?? c.counter ?? "—"}`}
-                </span>
-              </div>
-            ))
+          <h2>Now calling</h2>
+          {loading ? (
+            <p className="empty-state">Loading…</p>
+          ) : current ? (
+            <div className="display-call">
+              <strong>{current.code}</strong>
+              <span>Counter {current.counterNumber}</span>
+            </div>
           ) : (
             <p className="empty-state">No called tickets yet.</p>
           )}
         </article>
+
         <article className="panel">
-          <h2>Waiting queues</h2>
-          {queues.length ? (
-            queues.map((q, i) => (
-              <div className="queue-row" key={q.serviceId ?? i}>
-                <span>
-                  {q.serviceName || q.name || `Service ${q.serviceId ?? i + 1}`}
-                </span>
-                <strong>{q.length ?? q.waiting ?? "—"} waiting</strong>
+          <h2>Recent calls</h2>
+          {recent.length ? (
+            recent.map((call) => (
+              <div key={call.id} className="display-call">
+                <strong>{call.code}</strong>
+                <span>Counter {call.counterNumber}</span>
               </div>
             ))
           ) : (
-            <p className="empty-state">No queue information available.</p>
+            <p className="empty-state">No recent calls.</p>
           )}
         </article>
       </div>
