@@ -1,14 +1,9 @@
 // All calls to the backend go through this file.
 // Pages import these functions instead of calling fetch() directly,
 // so if a URL or a response format changes, only this file needs updating.
-//
-// TODO(backend): the backend does not exist yet. Every endpoint below is a PROPOSAL
-// based on the spec. Agree on paths and response shapes with the backend team
-// and fix each line marked TODO(backend).
 
-const BASE_URL = '/api' // forwarded to the backend by the Vite proxy (vite.config.js)
+const BASE_URL = '/api' 
 
-// Small fetch wrapper: sends/receives JSON and turns HTTP errors into exceptions.
 async function request(path, options = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -16,28 +11,35 @@ async function request(path, options = {}) {
   })
 
   if (!response.ok) {
-    const message = await response.text() // TODO(backend): adapt to the backend's error format (e.g. { error: "..." })
-    throw new Error(message || `Request failed with status ${response.status}`)
+    // The backend sends errors as { error, message }
+    const body = await response.json().catch(() => null);
+    throw new Error(
+      body?.message ?? `Request failed with status ${response.status}`,
+    );
   }
 
   // 204 No Content has no body to parse
-  if (response.status === 204) return null
-  return response.json()
+  if (response.status === 204) return null;
+  return response.json();
 }
 
 // ---- Story 1: Get ticket ----
 
-/** Service types offered by the office, e.g. [{ id, name, serviceTime }] */
+/**
+ * Service types offered by the office.
+ * @returns {Promise<Array<{ id: number, name: string }>>}
+ */
 export function getServices() {
-  return request('/services') // TODO(backend): confirm path and response shape
+  return request('/v1/services')
 }
 
-/** Issue a new ticket for a service, e.g. returns { id, code, serviceId } */
+/**
+ * Issues a new ticket for the given service.
+ * @param {number | string} serviceId
+ * @returns {Promise<{ id: number, code: string, serviceId: number }>}
+ */
 export function createTicket(serviceId) {
-  return request('/tickets', { // TODO(backend): confirm path, body and response shape
-    method: 'POST',
-    body: JSON.stringify({ serviceId }),
-  })
+  return request(`/v1/tickets/${serviceId}`, { method: 'POST' })
 }
 
 // ---- Story 2: Next customer ----

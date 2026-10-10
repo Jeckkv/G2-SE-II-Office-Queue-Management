@@ -63,11 +63,12 @@ router.post(
     //   ),
     // );
     // console.log("---");
-
-    return res
-      .status(StatusCodes.OK)
-      .json({ message: `Successfully created ticket.`, id: ticket.id });
-  },
-);
+return res.status(StatusCodes.OK).json({
+      message: "Successfully created ticket.",
+      id: ticket.id,
+      code: ticket.code,
+      serviceId: ticket.serviceId,
+    });
+})
 
 export default router;
