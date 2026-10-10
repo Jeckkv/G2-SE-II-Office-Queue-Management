@@ -12,17 +12,25 @@ export default class TicketRepository {
   static save(ticket) {
     const query =
       `INSERT INTO ${this.TABLE_NAME} (code, service_id, status, counter_id, created_at, called_at) ` +
-      "VALUES (@code, @serviceID, @status, @counterID, @createdAt, @calledAt)";
-    const lastID = db.prepare(query).run({
-      code: String(Date.now()), // FIXME. This is just a placeholder.
+      `VALUES (
+        (SELECT code_prefix || printf('%03d', (
+          SELECT COUNT(*) + 1 
+          FROM ${this.TABLE_NAME} 
+          WHERE service_id = @serviceID 
+            AND issue_date = date('now', 'localtime')
+        )) FROM services WHERE id = @serviceID),
+        @serviceID, @status, @counterID, @createdAt, @calledAt
+      ) RETURNING id, code`;
+      
+    const result = db.prepare(query).get({
       serviceID: ticket.serviceId,
       status: ticket.status,
       counterID: ticket.counterId,
       createdAt: ticket.createdAt,
       calledAt: ticket.calledAt,
-    }).lastInsertRowid;
+    });
 
-    return lastID;
+    return result;
   }
 
  /**

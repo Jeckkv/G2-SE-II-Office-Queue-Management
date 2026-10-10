@@ -10,7 +10,9 @@ describe('App', () => {
         <App />
       </MemoryRouter>
     )
-    expect(screen.getByText('Office Queue Management')).toBeInTheDocument()
+    // Use getByRole to target the h1 specifically — Layout also renders the
+    // same text as a <strong> in the top panel on the dev branch.
+    expect(screen.getByRole('heading', { level: 1, name: 'Office Queue Management' })).toBeInTheDocument()
   })
 
   it('renders customer, officer, and display role buttons', () => {

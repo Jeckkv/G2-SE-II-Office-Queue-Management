@@ -5,6 +5,13 @@ import CounterRepository from "#src/models/counters/repository.js";
 
 const router = express.Router();
 
+// Returns all counters with the service IDs each one handles.
+// Used by the officer page to populate the counter dropdown.
+router.get("/", (_req, res) => {
+  const counters = CounterRepository.getAll();
+  return res.status(StatusCodes.OK).json(counters);
+});
+
 // Story "Next customer": the officer calls the next customer to the counter.
 // 200 + the called ticket | 204 if all the counter's queues are empty | 404 if the counter does not exist
 router.post("/:counterId/next", (req, res) => {

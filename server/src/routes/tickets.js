@@ -49,24 +49,15 @@ router.post(
     const { serviceid } = req.cleanData;
 
     const ticket = Ticket.createNew(serviceid);
-    const lastID = TicketRepository.save(ticket);
-    // I'm not really a fan of this
-    ticket.id = lastID;
-    ticket.code = `S${lastID}`;
-
-    // TICKETS_FOR_SERVICE[serviceid - 1].push(ticket.id);
-    //
-    // console.log("---");
-    // TICKETS_FOR_SERVICE.forEach((queue, idx) =>
-    //   console.log(
-    //     `Queue for service ${SERVICE_TYPES[idx + 1]}: ${queue.toString()}`,
-    //   ),
-    // );
-    // console.log("---");
+    const result = TicketRepository.save(ticket);
+    
+    // Set the id and properly generated code from the DB
+    ticket.id = result.id;
+    ticket.code = result.code;
 
     return res
       .status(StatusCodes.OK)
-      .json({ message: `Successfully created ticket.`, id: ticket.id });
+      .json({ message: `Successfully created ticket.`, id: ticket.id, code: ticket.code });
   },
 );
 
