@@ -3,18 +3,14 @@ import { param } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 
 import validate from "#src/middlewares/validate.js";
-import Queue from "#src/lib/queue.js";
-import {
-  NOF_SERVICES,
-  SERVICE_TYPES,
-} from "#src/models/services/service-types.js";
+import { NOF_SERVICES } from "#src/models/services/service-types.js";
 import TicketRepository from "#src/models/tickets/repository.js";
 import Ticket from "#src/models/tickets/ticket.js";
 
-const TICKETS_FOR_SERVICE = Array.from(
-  { length: NOF_SERVICES },
-  (_) => new Queue(),
-);
+// const TICKETS_FOR_SERVICE = Array.from(
+//   { length: NOF_SERVICES },
+//   (_) => new Queue(),
+// );
 
 const router = express.Router();
 
@@ -39,15 +35,15 @@ router.get(
     ticket.id = lastID;
     ticket.code = `S${lastID}`;
 
-    TICKETS_FOR_SERVICE[serviceid - 1].push(ticket.id);
-
-    console.log("---");
-    TICKETS_FOR_SERVICE.forEach((queue, idx) =>
-      console.log(
-        `Queue for service ${SERVICE_TYPES[idx + 1]}: ${queue.toString()}`,
-      ),
-    );
-    console.log("---");
+    // TICKETS_FOR_SERVICE[serviceid - 1].push(ticket.id);
+    //
+    // console.log("---");
+    // TICKETS_FOR_SERVICE.forEach((queue, idx) =>
+    //   console.log(
+    //     `Queue for service ${SERVICE_TYPES[idx + 1]}: ${queue.toString()}`,
+    //   ),
+    // );
+    // console.log("---");
 
     return res
       .status(StatusCodes.OK)
