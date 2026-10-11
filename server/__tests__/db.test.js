@@ -1,58 +1,49 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll } from "vitest";
 
-// Use an in-memory database so tests never touch the real DB file.
-process.env.DB_PATH = ':memory:'
+import db from "#src/database/database.js";
+import ServiceRepository from "#src/models/services/repository.js";
+import CounterRepository from "#src/models/counters/repository.js";
+import TicketRepository from "#src/models/tickets/repository.js";
+import Ticket from "#src/models/tickets/ticket.js";
 
-import { all, get, run, resetDb, closeDb } from '../db/db.js'
+describe("Database & Repositories", () => {
 
-describe('Database helpers', () => {
-  beforeAll(async () => {
-    await resetDb() // creates tables + loads seed data in :memory:
-  })
+  it("should return seeded services", () => {
+    const services = ServiceRepository.getAll();
+    expect(services).toBeDefined();
+    expect(services.length).toBe(4);
+    expect(services[0].tag).toBe("DEPOSIT");
+  });
 
-  afterAll(async () => {
-    await closeDb()
-  })
+  it("should return seeded counters and check existence", () => {
+    expect(CounterRepository.exists(1)).toBe(true);
+    expect(CounterRepository.exists(9999)).toBe(false);
 
-  it('should return seeded services', async () => {
-    const services = await all('SELECT * FROM services')
-    expect(services).toBeDefined()
-    expect(services.length).toBe(4) // DEPOSIT, SHIPPING, ACCOUNTS, PAYMENTS
-  })
+    const counters = CounterRepository.getAll();
+    expect(counters).toHaveLength(4);
+    expect(counters[0]).toHaveProperty("number");
+    expect(counters[0]).toHaveProperty("serviceIds");
+  });
 
-  it('should return a single service by id', async () => {
-    const service = await get('SELECT * FROM services WHERE id = ?', [1])
-    expect(service).toBeDefined()
-    expect(service.id).toBe(1)
-    expect(service.tag).toBe('DEPOSIT')
-    expect(service.service_time).toBe(5)
-  })
+  it("should create a new ticket with properly formatted sequential code", () => {
+    const ticket = Ticket.createNew(1);
+    const result = TicketRepository.save(ticket);
 
-  it('should return seeded counters', async () => {
-    const counters = await all('SELECT * FROM counters')
-    expect(counters).toHaveLength(4)
-  })
+    expect(result).toBeDefined();
+    expect(result.id).toBeGreaterThan(0);
+    expect(result.code).toMatch(/^D\d{3}$/);
+  });
 
-  it('should enforce counter-service relationships', async () => {
-    // Counter 2 handles Deposit (1) + Shipping (2)
-    const cs = await all(
-      'SELECT service_id FROM counter_services WHERE counter_id = ? ORDER BY service_id',
-      [2]
-    )
-    expect(cs.map((r) => r.service_id)).toEqual([1, 2])
-  })
+  it("should call next customer for a counter", () => {
+    // Counter 1 serves service 1 (Deposit)
+    const called = CounterRepository.callNextCustomer(1);
+    expect(called).toBeDefined();
+    expect(called.counterId).toBe(1);
+    expect(called.calledAt).toBeDefined();
 
-  it('should insert and retrieve a ticket', async () => {
-    const { lastID } = await run(
-      "INSERT INTO tickets (code, service_id) VALUES (?, ?)",
-      ['TEST-001', 1]
-    )
-    expect(lastID).toBeGreaterThan(0)
-
-    const ticket = await get('SELECT * FROM tickets WHERE id = ?', [lastID])
-    expect(ticket.code).toBe('TEST-001')
-    expect(ticket.service_id).toBe(1)
-    expect(ticket.status).toBe('WAITING')
-    expect(ticket.counter_id).toBeNull()
-  })
-})
+    // Verify it appears in called tickets for today
+    const calledToday = TicketRepository.getCalledToday(5);
+    expect(calledToday.length).toBeGreaterThan(0);
+    expect(calledToday[0].code).toBe(called.code);
+  });
+});

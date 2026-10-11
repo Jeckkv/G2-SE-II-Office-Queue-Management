@@ -17,6 +17,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
     css: true,
+    // Exclude Playwright E2E specs — they use Playwright's own test runner, not Vitest
+    exclude: ['**/node_modules/**', '**/tests/e2e/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
