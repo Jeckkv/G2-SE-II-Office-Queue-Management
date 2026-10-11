@@ -29,6 +29,13 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+      
+      - name: Start Backend
+        run: |
+          npm ci
+          node index.js &
+          npx --yes wait-on http://localhost:3000/api/v1/services
+        working-directory: server
 
       - name: Run E2E tests
         run: npx playwright test
