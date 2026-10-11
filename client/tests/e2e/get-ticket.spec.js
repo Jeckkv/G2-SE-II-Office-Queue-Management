@@ -52,13 +52,9 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
   // ── Service list ────────────────────────────────────────────────────────────
 
   test("service dropdown loads options from the backend", async ({ page }) => {
-    // Wait for at least one real option beyond the placeholder
     const select = page.locator("#service-select");
-    await expect(select.locator("option")).toHaveCount.greaterThan
-      ? await expect(select.locator("option:not([value=''])")).not.toHaveCount(0)
-      : await expect(select).toBeVisible();
-
-    // Try a more direct assertion: at least 2 <option> elements
+    // Auto-retrying assertion: wait for real options to arrive beyond the placeholder
+    await expect(select.locator("option")).not.toHaveCount(1, { timeout: 5000 });
     const optionCount = await select.locator("option").count();
     expect(optionCount).toBeGreaterThanOrEqual(2); // placeholder + ≥1 service
   });
@@ -77,7 +73,8 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
 
     // Wait for services to load
     await page.waitForFunction(
-      () => document.querySelector("#service-select")?.options.length > 1,
+      () => (document.querySelector("#service-select")?.options.length ?? 0) > 1,
+      null,
       { timeout: 5000 }
     );
 
@@ -97,7 +94,8 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
 
     // Wait for services to load from the backend
     await page.waitForFunction(
-      () => document.querySelector("#service-select")?.options.length > 1,
+      () => (document.querySelector("#service-select")?.options.length ?? 0) > 1,
+      null,
       { timeout: 5000 }
     );
 
@@ -113,7 +111,8 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
     const select = page.locator("#service-select");
 
     await page.waitForFunction(
-      () => document.querySelector("#service-select")?.options.length > 1,
+      () => (document.querySelector("#service-select")?.options.length ?? 0) > 1,
+      null,
       { timeout: 5000 }
     );
 
@@ -129,7 +128,8 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
     const select = page.locator("#service-select");
 
     await page.waitForFunction(
-      () => document.querySelector("#service-select")?.options.length > 1,
+      () => (document.querySelector("#service-select")?.options.length ?? 0) > 1,
+      null,
       { timeout: 5000 }
     );
 
@@ -150,7 +150,8 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
     const select = page.locator("#service-select");
 
     await page.waitForFunction(
-      () => document.querySelector("#service-select")?.options.length > 1,
+      () => (document.querySelector("#service-select")?.options.length ?? 0) > 1,
+      null,
       { timeout: 5000 }
     );
 
@@ -192,7 +193,8 @@ test.describe("Story 1 – Get ticket: Customer page", () => {
     await page.goto("/customer");
 
     await page.waitForFunction(
-      () => document.querySelector("#service-select")?.options.length > 1,
+      () => (document.querySelector("#service-select")?.options.length ?? 0) > 1,
+      null,
       { timeout: 5000 }
     );
 

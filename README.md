@@ -6,8 +6,8 @@ System that manages the queues of an office with several counters (e.g. a post o
 
 ```
 .
-├── client/   # Frontend (React + Vite, JavaScript)
-└── server/   # Backend (Node.js; for now only the database module)
+├── client/   # Frontend (React + Vite, JavaScript, Playwright E2E tests)
+└── server/   # Backend (Node.js, Express, better-sqlite3, Vitest unit & integration tests)
 ```
 
 ## Requirements
@@ -28,12 +28,14 @@ The app opens at `http://localhost:5173`.
 
 ### Scripts
 
-| Command           | What it does                         |
-| ----------------- | ------------------------------------ |
-| `npm run dev`     | Start the dev server with hot reload |
-| `npm run build`   | Production build into `client/dist/` |
-| `npm run preview` | Serve the production build locally   |
-| `npm run lint`    | Check the code with ESLint           |
+| Command                               | What it does                                  |
+| ------------------------------------- | --------------------------------------------- |
+| `npm run dev`                         | Start the dev server with hot reload          |
+| `npm run build`                       | Production build into `client/dist/`          |
+| `npm run preview`                     | Serve the production build locally            |
+| `npm run lint`                        | Check the code with ESLint                    |
+| `npx playwright test --reporter=list` | Run Playwright end-to-end tests               |
+| `npx playwright show-report`          | View Playwright HTML test report              |
 
 ### Routes
 
@@ -47,13 +49,16 @@ The app opens at `http://localhost:5173`.
 ### Folder structure
 
 ```
-client/src/
-├── main.jsx         # Entry point, wraps the app in the router
-├── App.jsx          # All route definitions
-├── index.css        # Global styles
-├── api/client.js    # All calls to the backend (pages never call fetch directly)
-├── components/      # Shared components (Layout with header and nav)
-└── pages/           # One component per route
+client/
+├── src/
+│   ├── main.jsx         # Entry point, wraps the app in the router
+│   ├── App.jsx          # All route definitions
+│   ├── index.css        # Global styles
+│   ├── api/client.js    # All calls to the backend (pages never call fetch directly)
+│   ├── components/      # Shared components (Layout with header and nav)
+│   └── pages/           # One component per route
+└── tests/
+    └── e2e/             # Playwright E2E test suites (Story 1, Story 2, navigation)
 ```
 
 ### Talking to the backend
@@ -69,7 +74,30 @@ The backend doesn't exist yet: the backend port and every endpoint in `src/api/c
 
 ## Backend
 
-TODO(backend): add setup and run instructions.
+### Folder structure
+
+```
+server/
+├── index.js             # Application entry point & Express server
+├── src/
+│   ├── database/        # SQLite connection, schema and seed scripts
+│   ├── errors/          # Custom HTTP error classes
+│   ├── middlewares/     # CORS, error handling, validation
+│   ├── models/          # Repositories and models (counters, services, tickets)
+│   └── routes/          # API route definitions (/counters, /services, /tickets)
+└── tests/
+    ├── helpers/         # Test DB utilities and createApp helper
+    ├── unit/            # Unit tests for models, repositories, middlewares
+    └── integration/     # API integration tests using Supertest
+```
+
+### Setup & Run
+
+```bash
+cd server
+npm install
+npm run dev
+```
 
 ### Database
 
@@ -103,3 +131,19 @@ const { lastID, changes } = await run(
 - Always pass values as `?` parameters, never by concatenating strings into the SQL.
 - `DB_PATH` environment variable: use another database file. With `DB_PATH=:memory:` the database lives in memory, useful for tests: call `await resetDb()` before each test (or `resetDb({ seed: false })` for empty tables) and `await closeDb()` at the end.
 - A queue is "the `WAITING` tickets of a service with `issue_date` = today", so queues start empty every day without deleting anything.
+
+### Backend Scripts & Testing
+
+| Command                | What it does                                                 |
+| ---------------------- | ------------------------------------------------------------ |
+| `npm run dev`          | Start development server on port 3000                        |
+| `npm test`             | Run backend test suite (unit + integration) with Vitest      |
+| `npm run test:coverage`| Run tests and generate V8 code coverage report               |
+| `npm run test:watch`   | Run tests in interactive watch mode                          |
+
+---
+
+## Testing Documentation
+
+For complete instructions, story breakdown, and advanced test execution commands, see [TESTING.md](./TESTING.md).
+

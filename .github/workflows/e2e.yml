@@ -33,8 +33,10 @@ jobs:
       - name: Start Backend
         run: |
           npm ci
+          npm run db:seed
           node index.js &
           npx --yes wait-on http://localhost:3000/api/v1/services
+          curl -s http://localhost:3000/api/v1/services
         working-directory: server
 
       - name: Run E2E tests
