@@ -31,6 +31,7 @@ export default function RoleSelectionPage() {
             key={role.path}
             type="button"
             className="role-button"
+            aria-label={role.label}
             onClick={() => navigate(role.path)}
           >
             <span className="role-label">{role.label}</span>

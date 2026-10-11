@@ -6,7 +6,7 @@
 // based on the spec. Agree on paths and response shapes with the backend team
 // and fix each line marked TODO(backend).
 
-const BASE_URL = '/api' // forwarded to the backend by the Vite proxy (vite.config.js)
+const BASE_URL = '/api/v1' // forwarded to the backend by the Vite proxy (vite.config.js)
 
 // Small fetch wrapper: sends/receives JSON and turns HTTP errors into exceptions.
 async function request(path, options = {}) {
@@ -34,9 +34,8 @@ export function getServices() {
 
 /** Issue a new ticket for a service, e.g. returns { id, code, serviceId } */
 export function createTicket(serviceId) {
-  return request('/tickets', { // TODO(backend): confirm path, body and response shape
+  return request(`/tickets/${serviceId}`, {
     method: 'POST',
-    body: JSON.stringify({ serviceId }),
   })
 }
 
