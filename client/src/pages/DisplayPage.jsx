@@ -4,8 +4,15 @@ import { getDisplayBoard, getQueueLengths } from "../api/client.js";
 import usePolling from "../hooks/usePolling.js";
 
 export default function DisplayPage() {
-  const { data: calls, error: callsError, loading } = usePolling(getDisplayBoard, 2000);
-  const { data: queues, error: queuesError } = usePolling(getQueueLengths, 2000);
+  const {
+    data: calls,
+    error: callsError,
+    loading,
+  } = usePolling(getDisplayBoard, 2000);
+  const { data: queues, error: queuesError } = usePolling(
+    getQueueLengths,
+    2000,
+  );
 
   // The newest call is "Now calling", the others are recent calls
   const [current, ...recent] = calls ?? [];
