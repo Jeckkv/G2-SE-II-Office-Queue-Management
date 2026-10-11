@@ -19,13 +19,13 @@ export default defineConfig({
     {
       command: 'npm run dev',
       url: 'http://localhost:5173',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 30000,
     },
     {
       command: 'cd ../server && npm run db:seed && node index.js',
       url: 'http://localhost:3000/api/v1/services',
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: true,
       timeout: 30000,
     },
   ],
