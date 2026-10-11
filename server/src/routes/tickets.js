@@ -10,7 +10,7 @@ import Ticket from "#src/models/tickets/ticket.js";
 const router = express.Router();
 
 /**
- * Story "Call customer": returns today's called tickets, most recent first,
+ * Returns today's called tickets, most recent first,
  * so the display board can show which ticket goes to which counter.
  */
 router.get(
@@ -27,6 +27,15 @@ router.get(
     return res.status(StatusCodes.OK).json(tickets);
   },
 );
+
+/**
+ * Show how many tickets are waiting today for each service,
+ * so the display board can show the queue lengths.
+ */
+router.get("/waiting", (_req, res) => {
+  const counts = TicketRepository.getWaitingCounts();
+  return res.status(StatusCodes.OK).json(counts);
+});
 
 /**
  * Creates a new ticket for the specified service.

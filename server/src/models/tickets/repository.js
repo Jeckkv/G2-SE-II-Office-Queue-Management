@@ -64,4 +64,27 @@ export default class TicketRepository {
         calledAt: row.called_at,
       }));
   }
+
+  /**
+   * Story "Call customer": number of tickets still waiting today for each service.
+   * Services with an empty queue are included with waiting = 0.
+   * @returns {Array<{ serviceId: number, serviceName: string, waiting: number }>}
+   */
+  static getWaitingCounts() {
+    const query =
+      "SELECT s.id, s.name, COUNT(t.id) AS waiting " +
+      "FROM services s " +
+      `LEFT JOIN ${this.TABLE_NAME} t ON t.service_id = s.id ` +
+      "AND t.status = 'WAITING' AND t.issue_date = date('now', 'localtime') " +
+      "GROUP BY s.id ORDER BY s.id";
+
+    return db
+      .prepare(query)
+      .all()
+      .map((/** @type {any} */ row) => ({
+        serviceId: row.id,
+        serviceName: row.name,
+        waiting: row.waiting,
+      }));
+  }
 }

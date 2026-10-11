@@ -70,3 +70,11 @@ export function callNextCustomer(counterId) {
 export function getDisplayBoard(limit = 5) {
   return request(`/v1/tickets/called?limit=${limit}`)
 }
+
+/**
+ * Number of tickets waiting today for each service, for the display board.
+ * @returns {Promise<Array<{ serviceId: number, serviceName: string, waiting: number }>>}
+ */
+export function getQueueLengths() {
+  return request('/v1/tickets/waiting')
+}

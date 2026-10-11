@@ -1,10 +1,12 @@
 import { Link } from "react-router";
 
-import { getDisplayBoard } from "../api/client.js";
+import { getDisplayBoard, getQueueLengths } from "../api/client.js";
 import usePolling from "../hooks/usePolling.js";
 
 export default function DisplayPage() {
-  const { data: calls, error, loading } = usePolling(getDisplayBoard, 2000);
+  const { data: calls, error: callsError, loading } = usePolling(getDisplayBoard, 2000);
+  const { data: queues, error: queuesError } = usePolling(getQueueLengths, 2000);
+
   // The newest call is "Now calling", the others are recent calls
   const [current, ...recent] = calls ?? [];
 
@@ -20,7 +22,7 @@ export default function DisplayPage() {
         </Link>
       </header>
 
-      {error && (
+      {(callsError || queuesError) && (
         <div role="alert" className="alert error">
           Connection problem, showing the last data received.
         </div>
@@ -52,6 +54,20 @@ export default function DisplayPage() {
             ))
           ) : (
             <p className="empty-state">No recent calls.</p>
+          )}
+        </article>
+
+        <article className="panel">
+          <h2>Waiting queues</h2>
+          {queues?.length ? (
+            queues.map((queue) => (
+              <div key={queue.serviceId} className="queue-row">
+                <span>{queue.serviceName}</span>
+                <strong>{queue.waiting} waiting</strong>
+              </div>
+            ))
+          ) : (
+            <p className="empty-state">No queue information available.</p>
           )}
         </article>
       </div>
