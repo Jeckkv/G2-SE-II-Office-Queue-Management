@@ -35,18 +35,19 @@ describe("TicketRepository.save()", () => {
 
   it("returns a positive integer id after saving", () => {
     const ticket = Ticket.createNew(1);
-    const lastID = TicketRepository.save(ticket);
-    // better-sqlite3 lastInsertRowid can be Number or BigInt depending on the value
-    expect(Number(lastID)).toBeGreaterThan(0);
+    const result = TicketRepository.save(ticket);
+    expect(result).toBeDefined();
+    expect(Number(result.id)).toBeGreaterThan(0);
+    expect(result.code).toBeDefined();
   });
 
   it("persists the ticket in the database with WAITING status", () => {
     const ticket = Ticket.createNew(1);
-    const lastID = TicketRepository.save(ticket);
+    const { id } = TicketRepository.save(ticket);
 
     const row = db
       .prepare("SELECT * FROM tickets WHERE id = ?")
-      .get(Number(lastID));
+      .get(Number(id));
 
     expect(row).toBeDefined();
     expect(row.service_id).toBe(1);
@@ -58,28 +59,23 @@ describe("TicketRepository.save()", () => {
   });
 
   it("persists the correct serviceId for each service", () => {
-    // The repository uses Date.now() as the code (a placeholder).
-    // To avoid a UNIQUE constraint (issue_date, code) collision when running
-    // multiple inserts in the same millisecond, we insert sequentially and
-    // check the count instead of relying on the returned id per iteration.
-    const countBefore = db.prepare("SELECT COUNT(*) AS cnt FROM tickets").get().cnt;
-
     for (const serviceId of [1, 2, 3, 4]) {
       // Verify by inserting one at a time and reading back the latest row
       const ticket = Ticket.createNew(serviceId);
-      let lastID;
+      let ticketId;
       try {
-        lastID = TicketRepository.save(ticket);
+        const saved = TicketRepository.save(ticket);
+        ticketId = saved.id;
       } catch {
         // If two Date.now() codes clash, insert directly with a guaranteed-unique code
         const { lastInsertRowid } = db
           .prepare("INSERT INTO tickets (code, service_id) VALUES (?, ?)")
           .run(`SVC${serviceId}-${Math.random()}`, serviceId);
-        lastID = lastInsertRowid;
+        ticketId = lastInsertRowid;
       }
       const row = db
         .prepare("SELECT service_id FROM tickets WHERE id = ?")
-        .get(Number(lastID));
+        .get(Number(ticketId));
       expect(row.service_id).toBe(serviceId);
     }
   });
