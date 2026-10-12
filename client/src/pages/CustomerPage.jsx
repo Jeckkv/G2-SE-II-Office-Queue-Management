@@ -58,7 +58,7 @@ export default function CustomerPage() {
             onChange={(e) => setServiceId(e.target.value)}
             required
           >
-            <option value="">Select service type</option>
+            <option value="">Select a service</option>
             {services.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}

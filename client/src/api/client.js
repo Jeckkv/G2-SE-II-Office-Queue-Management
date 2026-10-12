@@ -2,7 +2,7 @@
 // Pages import these functions instead of calling fetch() directly,
 // so if a URL or a response format changes, only this file needs updating.
 
-const BASE_URL = "/api";
+const BASE_URL = "/api"; // forwarded to the backend by the Vite proxy (vite.config.js)
 
 async function request(path, options = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {
@@ -36,7 +36,7 @@ export function getServices() {
 /**
  * Issues a new ticket for the given service.
  * @param {number | string} serviceId
- * @returns {Promise<{ id: number, code: string, serviceId: number }>}
+ * @returns {Promise<{ id: number, code: string, serviceId: number }>} 
  */
 export function createTicket(serviceId) {
   return request(`/v1/tickets/${serviceId}`, { method: "POST" });
