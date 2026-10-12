@@ -1,5 +1,5 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vitest/config'
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -9,17 +9,19 @@ export default defineConfig({
     proxy: {
       // Requests starting with /api are forwarded to the backend:
       // no hardcoded backend URL in the frontend and no CORS issues in development.
-      '/api': 'http://localhost:3000', // TODO(backend): replace 3001 with the real backend port
+      "/api": "http://localhost:3000",
     },
   },
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.js',
+    environment: "jsdom",
+    setupFiles: "./src/test/setup.js",
     css: true,
+    // Exclude Playwright E2E specs — they use Playwright's own test runner, not Vitest
+    exclude: ["**/node_modules/**", "**/tests/e2e/**"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'lcov'],
+      provider: "v8",
+      reporter: ["text", "lcov"],
     },
   },
-})
+});

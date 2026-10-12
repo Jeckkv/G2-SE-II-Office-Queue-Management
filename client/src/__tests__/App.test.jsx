@@ -1,38 +1,49 @@
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router'
-import { describe, it, expect } from 'vitest'
-import App from '../App.jsx'
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+import { describe, it, expect } from "vitest";
+import App from "../App.jsx";
 
-describe('App', () => {
-  it('renders the role selection page at /', () => {
+describe("App", () => {
+  it("renders the role selection page at /", () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
+      <MemoryRouter initialEntries={["/"]}>
         <App />
-      </MemoryRouter>
-    )
-    expect(screen.getByText('Office Queue Management')).toBeInTheDocument()
-  })
+      </MemoryRouter>,
+    );
+    // Use getByRole to target the h1 specifically — Layout also renders the
+    // same text as a <strong> in the top panel on the dev branch.
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Office Queue Management",
+      }),
+    ).toBeInTheDocument();
+  });
 
-  it('renders customer, officer, and display role buttons', () => {
+  it("renders customer, officer, and display role buttons", () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
+      <MemoryRouter initialEntries={["/"]}>
         <App />
-      </MemoryRouter>
-    )
-    const buttons = screen.getAllByRole('button')
-    const labels = buttons.map((btn) => btn.textContent)
-    expect(labels).toContain('CustomerChoose a service and get a ticket')
-    expect(labels).toContain('OfficerPick your counter and call the next customer')
-    expect(labels).toContain('Display boardShow called tickets and queue lengths')
-  })
+      </MemoryRouter>,
+    );
+    const buttons = screen.getAllByRole("button");
+    const labels = buttons.map((btn) => btn.textContent);
+    expect(labels).toContain("CustomerChoose a service and get a ticket");
+    expect(labels).toContain(
+      "OfficerPick your counter and call the next customer",
+    );
+    expect(labels).toContain(
+      "Display boardShow called tickets and queue lengths",
+    );
+  });
 
-  it('renders the not-found page for unknown routes', () => {
+  it("renders the not-found page for unknown routes", () => {
     render(
-      <MemoryRouter initialEntries={['/unknown-route']}>
+      <MemoryRouter initialEntries={["/unknown-route"]}>
         <App />
-      </MemoryRouter>
-    )
+      </MemoryRouter>,
+    );
     // NotFoundPage should render something — adjust if the page content differs
-    expect(document.querySelector('main')).toBeInTheDocument()
-  })
-})
+    expect(document.querySelector("main")).toBeInTheDocument();
+  });
+});
