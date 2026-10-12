@@ -35,10 +35,9 @@ describe("TicketRepository.save()", () => {
 
   it("returns a positive integer id after saving", () => {
     const ticket = Ticket.createNew(1);
-    const result = TicketRepository.save(ticket);
-    expect(result).toBeDefined();
-    expect(Number(result.id)).toBeGreaterThan(0);
-    expect(result.code).toBeDefined();
+    const { id, code } = TicketRepository.save(ticket);
+    expect(id).toBeGreaterThan(0);
+    expect(code).toMatch(/^D\d{3}$/);
   });
 
   it("persists the ticket in the database with WAITING status", () => {
@@ -47,7 +46,7 @@ describe("TicketRepository.save()", () => {
 
     const row = db
       .prepare("SELECT * FROM tickets WHERE id = ?")
-      .get(Number(id));
+      .get(id);
 
     expect(row).toBeDefined();
     expect(row.service_id).toBe(1);
@@ -60,22 +59,8 @@ describe("TicketRepository.save()", () => {
 
   it("persists the correct serviceId for each service", () => {
     for (const serviceId of [1, 2, 3, 4]) {
-      // Verify by inserting one at a time and reading back the latest row
-      const ticket = Ticket.createNew(serviceId);
-      let ticketId;
-      try {
-        const saved = TicketRepository.save(ticket);
-        ticketId = saved.id;
-      } catch {
-        // If two Date.now() codes clash, insert directly with a guaranteed-unique code
-        const { lastInsertRowid } = db
-          .prepare("INSERT INTO tickets (code, service_id) VALUES (?, ?)")
-          .run(`SVC${serviceId}-${Math.random()}`, serviceId);
-        ticketId = lastInsertRowid;
-      }
-      const row = db
-        .prepare("SELECT service_id FROM tickets WHERE id = ?")
-        .get(Number(ticketId));
+      const { id } = TicketRepository.save(Ticket.createNew(serviceId));
+      const row = db.prepare("SELECT service_id FROM tickets WHERE id = ?").get(id);
       expect(row.service_id).toBe(serviceId);
     }
   });
