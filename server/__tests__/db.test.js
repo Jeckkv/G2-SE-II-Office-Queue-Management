@@ -1,13 +1,11 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect } from "vitest";
 
-import db from "#src/database/database.js";
 import ServiceRepository from "#src/models/services/repository.js";
 import CounterRepository from "#src/models/counters/repository.js";
 import TicketRepository from "#src/models/tickets/repository.js";
 import Ticket from "#src/models/tickets/ticket.js";
 
 describe("Database & Repositories", () => {
-
   it("should return seeded services", () => {
     const services = ServiceRepository.getAll();
     expect(services).toBeDefined();

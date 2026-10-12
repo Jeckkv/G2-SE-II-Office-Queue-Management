@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getCounters, callNextCustomer, getDisplayBoard } from "../api/client.js";
+import {
+  getCounters,
+  callNextCustomer,
+  getDisplayBoard,
+} from "../api/client.js";
 
 export default function OfficerPage() {
   const [counters, setCounters] = useState([]);
@@ -71,7 +75,10 @@ export default function OfficerPage() {
       }
       setCurrent(ticket);
       setHistory((prev) =>
-        [{ ...ticket, calledAt: new Date().toLocaleTimeString() }, ...prev].slice(0, 10),
+        [
+          { ...ticket, calledAt: new Date().toLocaleTimeString() },
+          ...prev,
+        ].slice(0, 10),
       );
 
       // Refresh display board immediately after calling
@@ -88,8 +95,12 @@ export default function OfficerPage() {
   }
 
   // The counter's display number from the loaded list
-  const activeCounter = (counters || []).find((c) => String(c.id) === counterId);
-  const counterLabel = activeCounter ? `Counter ${activeCounter.number}` : (counterId || "—");
+  const activeCounter = (counters || []).find(
+    (c) => String(c.id) === counterId,
+  );
+  const counterLabel = activeCounter
+    ? `Counter ${activeCounter.number}`
+    : counterId || "—";
 
   // Ticket shown in the "Now serving" card
   const servingCode = current?.code ?? "—";
@@ -182,7 +193,8 @@ export default function OfficerPage() {
             {calling ? "Calling…" : "Next →"}
           </button>
           <p className="help-text">
-            Calls the next customer from the longest waiting queue for this counter.
+            Calls the next customer from the longest waiting queue for this
+            counter.
           </p>
         </article>
 

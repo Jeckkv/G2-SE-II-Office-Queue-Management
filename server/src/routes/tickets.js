@@ -7,15 +7,10 @@ import { NOF_SERVICES } from "#src/models/services/service-types.js";
 import TicketRepository from "#src/models/tickets/repository.js";
 import Ticket from "#src/models/tickets/ticket.js";
 
-// const TICKETS_FOR_SERVICE = Array.from(
-//   { length: NOF_SERVICES },
-//   (_) => new Queue(),
-// );
-
 const router = express.Router();
 
 /**
- * Story "Call customer": returns today's called tickets, most recent first,
+ * Returns today's called tickets, most recent first,
  * so the display board can show which ticket goes to which counter.
  */
 router.get(
@@ -34,6 +29,15 @@ router.get(
 );
 
 /**
+ * Show how many tickets are waiting today for each service,
+ * so the display board can show the queue lengths.
+ */
+router.get("/waiting", (_req, res) => {
+  const counts = TicketRepository.getWaitingCounts();
+  return res.status(StatusCodes.OK).json(counts);
+});
+
+/**
  * Creates a new ticket for the specified service.
  */
 router.post(
@@ -46,18 +50,19 @@ router.post(
     .toInt(),
   validate,
   (req, res) => {
-    const { serviceid } = req.cleanData;
+    const { serviceid } = /** @type {any} */ (req).cleanData;
 
     const ticket = Ticket.createNew(serviceid);
-    const result = TicketRepository.save(ticket);
-    
-    // Set the id and properly generated code from the DB
-    ticket.id = result.id;
-    ticket.code = result.code;
+    const { id, code } = TicketRepository.save(ticket);
+    ticket.id = id;
+    ticket.code = code;
 
-    return res
-      .status(StatusCodes.OK)
-      .json({ message: `Successfully created ticket.`, id: ticket.id, code: ticket.code });
+    return res.status(StatusCodes.OK).json({
+      message: "Successfully created ticket.",
+      id: ticket.id,
+      code: ticket.code,
+      serviceId: ticket.serviceId,
+    });
   },
 );
 

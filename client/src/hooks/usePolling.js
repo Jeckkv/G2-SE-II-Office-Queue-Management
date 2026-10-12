@@ -34,46 +34,46 @@
 // - In development, React StrictMode mounts components twice, so you may see
 //   two requests at startup. This does not happen in the production build.
 
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from "react";
 
 export default function usePolling(fetchFn, intervalMs = 2000) {
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Always calls the latest fetchFn passed by the component,
   // without being a dependency of the effect (so a new fetchFn does not restart the polling)
-  const callFetchFn = useEffectEvent(() => fetchFn())
+  const callFetchFn = useEffectEvent(() => fetchFn());
 
   useEffect(() => {
-    let cancelled = false // set by the cleanup: ignore results that arrive after unmount
-    let inFlight = false // true while a request is running
+    let cancelled = false; // set by the cleanup: ignore results that arrive after unmount
+    let inFlight = false; // true while a request is running
 
     async function poll() {
-      if (inFlight) return
-      inFlight = true
+      if (inFlight) return;
+      inFlight = true;
       try {
-        const result = await callFetchFn()
-        if (cancelled) return
-        setData(result)
-        setError(null)
+        const result = await callFetchFn();
+        if (cancelled) return;
+        setData(result);
+        setError(null);
       } catch (err) {
-        if (cancelled) return
-        setError(err) // keep the last valid data
+        if (cancelled) return;
+        setError(err); // keep the last valid data
       } finally {
-        inFlight = false
-        if (!cancelled) setLoading(false)
+        inFlight = false;
+        if (!cancelled) setLoading(false);
       }
     }
 
-    poll() // first call right away, without waiting for the first interval
-    const timer = setInterval(poll, intervalMs)
+    poll(); // first call right away, without waiting for the first interval
+    const timer = setInterval(poll, intervalMs);
 
     return () => {
-      cancelled = true
-      clearInterval(timer)
-    }
-  }, [intervalMs])
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [intervalMs]);
 
-  return { data, error, loading }
+  return { data, error, loading };
 }

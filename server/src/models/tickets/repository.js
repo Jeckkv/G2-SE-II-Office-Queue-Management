@@ -1,57 +1,59 @@
 import db from "#src/database/database.js";
 import Ticket from "#src/models/tickets/ticket.js";
-import dayjs from "dayjs";
 
 export default class TicketRepository {
   static TABLE_NAME = "tickets";
 
   /**
+   * Saves a new ticket and assigns it a code made of the service prefix and a
+   * daily counter for that service, e.g. "D003" (codes restart every day).
    * @param {Ticket} ticket The ticket that needs to be saved in the database.
-   * @returns The ID assigned to the ticket.
+   * @returns {{ id: number, code: string }} The ID and code assigned to the ticket.
    */
   static save(ticket) {
     const query =
       `INSERT INTO ${this.TABLE_NAME} (code, service_id, status, counter_id, created_at, called_at) ` +
       `VALUES (
         (SELECT code_prefix || printf('%03d', (
-          SELECT COUNT(*) + 1 
-          FROM ${this.TABLE_NAME} 
-          WHERE service_id = @serviceID 
+          SELECT COUNT(*) + 1
+          FROM ${this.TABLE_NAME}
+          WHERE service_id = @serviceID
             AND issue_date = date('now', 'localtime')
         )) FROM services WHERE id = @serviceID),
         @serviceID, @status, @counterID, @createdAt, @calledAt
       ) RETURNING id, code`;
-      
-    const result = db.prepare(query).get({
-      serviceID: ticket.serviceId,
-      status: ticket.status,
-      counterID: ticket.counterId,
-      createdAt: ticket.createdAt,
-      calledAt: ticket.calledAt,
-    });
+
+    const result = /** @type {{ id: number, code: string }} */ (
+      db.prepare(query).get({
+        serviceID: ticket.serviceId,
+        status: ticket.status,
+        counterID: ticket.counterId,
+        createdAt: ticket.createdAt,
+        calledAt: ticket.calledAt,
+      })
+    );
 
     return result;
   }
 
- /**
+  /**
    * Story "Call customer": tickets called today, most recent first,
    * with the counter number and service name for the display board.
    * @param {number} limit Maximum number of tickets to return.
    */
   static getCalledToday(limit) {
-    const today = dayjs().format("YYYY-MM-DD");
     const query =
       "SELECT t.id, t.code, t.service_id, s.name AS service_name, " +
       "t.counter_id, c.number AS counter_number, t.called_at " +
       `FROM ${this.TABLE_NAME} t ` +
       "JOIN counters c ON c.id = t.counter_id " +
       "JOIN services s ON s.id = t.service_id " +
-      "WHERE t.issue_date = @today AND t.called_at IS NOT NULL " +
+      "WHERE t.issue_date = date('now', 'localtime') AND t.called_at IS NOT NULL " +
       "ORDER BY t.called_at DESC, t.id DESC LIMIT @limit";
 
     return db
       .prepare(query)
-      .all({ today, limit })
+      .all({ limit })
       .map((/** @type {any} */ row) => ({
         id: row.id,
         code: row.code,
@@ -60,6 +62,29 @@ export default class TicketRepository {
         counterId: row.counter_id,
         counterNumber: row.counter_number,
         calledAt: row.called_at,
+      }));
+  }
+
+  /**
+   * Story "Call customer": number of tickets still waiting today for each service.
+   * Services with an empty queue are included with waiting = 0.
+   * @returns {Array<{ serviceId: number, serviceName: string, waiting: number }>}
+   */
+  static getWaitingCounts() {
+    const query =
+      "SELECT s.id, s.name, COUNT(t.id) AS waiting " +
+      "FROM services s " +
+      `LEFT JOIN ${this.TABLE_NAME} t ON t.service_id = s.id ` +
+      "AND t.status = 'WAITING' AND t.issue_date = date('now', 'localtime') " +
+      "GROUP BY s.id ORDER BY s.id";
+
+    return db
+      .prepare(query)
+      .all()
+      .map((/** @type {any} */ row) => ({
+        serviceId: row.id,
+        serviceName: row.name,
+        waiting: row.waiting,
       }));
   }
 }

@@ -12,7 +12,7 @@ const callNextStatement = db.prepare(`
   UPDATE tickets
   SET status = 'CALLED',
       counter_id = @counterId,
-      called_at = datetime('now', 'localtime')
+      called_at = strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')
   WHERE id = (
     SELECT t.id
     FROM tickets t
