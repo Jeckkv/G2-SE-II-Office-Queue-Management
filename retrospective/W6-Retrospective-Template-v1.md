@@ -43,8 +43,8 @@ formula StDev: $\sqrt{\frac{\sum_i(x_i - x_{mean})^2}{n-1}}$
 
 |            | Mean | StDev |
 |------------|------|-------|
-| Estimation |      |       | 
-| Actual     |      |       |
+| Estimation |   1.76 h <=> 1h 46m   |   0.48 h <=> 29m    | 
+| Actual     |   1.42 h <=> 1h 25m   |   0.64 h <=> 38m    |
 
 - Total estimation error ratio: sum of total hours spent / sum of total hours effort - 1
 
