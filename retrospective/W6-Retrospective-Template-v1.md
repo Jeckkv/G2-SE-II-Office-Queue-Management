@@ -11,9 +11,9 @@ sections:
 
 ### Macro statistics
 
-- Number of stories committed vs done: **3** committed, **7** done
+- Number of stories committed vs done: **3** committed, **3** done
 - Total points committed vs done: **7** committed, **7** done
-- Nr of hours planned vs spent (as a team): **60h** planned, **56h 30m** done
+- Nr of hours planned vs spent (as a team): **60h** planned, **58h 30m** done
 
 **Remember** a story is done ONLY if it fits the Definition of Done:
 
@@ -22,7 +22,7 @@ sections:
 - [x] Code present on Git
 - [x] End-to-End tests performed
 
-> Please refine your DoD 
+> Please refine your DoD
 
 ### Detailed statistics
 
