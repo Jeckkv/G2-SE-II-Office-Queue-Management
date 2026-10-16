@@ -56,17 +56,17 @@ formula StDev: $\sqrt{\frac{\sum_i(x_i - x_{mean})^2}{n-1}}$
 ## QUALITY MEASURES
 
 - Unit Testing:
-  - Total hours estimated
-  - Total hours spent
-  - Nr of automated unit test cases
-  - Coverage
+  - Total hours estimated --> 2h 15m
+  - Total hours spent --> 3h
+  - Nr of automated unit test cases --> 47
+  - Coverage --> 91.72%
 - E2E testing:
-  - Total hours estimated
-  - Total hours spent
-  - Nr of test cases
+  - Total hours estimated --> 3h
+  - Total hours spent --> 3h
+  - Nr of test cases --> 33
 - Code review
-  - Total hours estimated
-  - Total hours spent
+  - Total hours estimated --> 3h
+  - Total hours spent --> 3h 41m
 
 ## ASSESSMENT
 
