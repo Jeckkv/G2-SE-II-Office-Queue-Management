@@ -1,11 +1,4 @@
-# TEMPLATE FOR RETROSPECTIVE (Team ##)
-
-The retrospective should include _at least_ the following
-sections:
-
-- [process measures](#process-measures)
-- [quality measures](#quality-measures)
-- [general assessment](#assessment)
+# Sprint 1 Retrospective (Team 2)
 
 ## PROCESS MEASURES
 
@@ -15,14 +8,11 @@ sections:
 - Total points committed vs done: **7** committed, **7** done
 - Nr of hours planned vs spent (as a team): **60h** planned, **56h 30m** done
 
-**Remember** a story is done ONLY if it fits the Definition of Done:
-
+Our checklist for DoD:
 - [x] Unit Tests passing
 - [x] Code review completed
 - [x] Code present on Git
 - [x] End-to-End tests performed
-
-> Please refine your DoD 
 
 ### Detailed statistics
 
@@ -31,8 +21,6 @@ sections:
 | 1     | 5       | 3      | 8h 30m     | 8h 46m       |
 | 2     | 6       | 2      | 11h        | 9h 15m       |
 | 3     | 6       | 2      | 10h        | 8h 35m       |
-
-> place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
 - Hours per task average, standard deviation (estimate and actual)
 
@@ -59,7 +47,7 @@ formula StDev: $\sqrt{\frac{\sum_i(x_i - x_{mean})^2}{n-1}}$
   - Total hours estimated --> 2h 15m
   - Total hours spent --> 3h
   - Nr of automated unit test cases --> 47
-  - Coverage --> 91.72%
+  - Coverage --> 100%
 - E2E testing:
   - Total hours estimated --> 3h
   - Total hours spent --> 3h
@@ -70,15 +58,28 @@ formula StDev: $\sqrt{\frac{\sum_i(x_i - x_{mean})^2}{n-1}}$
 
 ## ASSESSMENT
 
-- What caused your errors in estimation (if any)?
+- **What caused your errors in estimation (if any)?**
 
-- What lessons did you learn (both positive and negative) in this sprint?
+We underestimated the time required for the initial setup, while the UI linking was completed faster than expected, leading to an overestimation of that task.
 
-- Which improvement goals set in the previous retrospective were you able to achieve?
-- Which ones you were not able to achieve? Why?
+- **What lessons did you learn (both positive and negative) in this sprint?**
 
-- Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
+We learned the importance of distributing tasks fairly and functionally to avoid blocking team members and ensure that everyone works on different aspects of the project. We also realized that tasks should be organized to allow team members to work more independently.
 
-> Propose one or two
+Additionally, we learned that preparing the demo should be a dedicated task and that we should avoid completing everything on the last day.
 
-- One thing you are proud of as a Team!!
+- **Which improvement goals set in the previous retrospective were you able to achieve?**
+
+We successfully completed the first three user stories.
+
+- **Which ones you were not able to achieve? Why?**
+
+We achieved all the improvement goals set in the previous retrospective.
+
+- **Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)**
+
+For the next sprint, we aim to improve task distribution to ensure a balanced workload and greater independence among team members. We also plan to dedicate specific time to preparing the demo, including a full rehearsal before the presentation, and to complete tasks earlier to avoid last-minute work.
+
+- **One thing you are proud of as a Team!!**
+
+We are proud of the amount of work we completed in less than a week. We maintained good communication throughout the sprint, collaborated effectively, and experienced no conflicts within the team.
