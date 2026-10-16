@@ -4,9 +4,9 @@
 
 ### Macro statistics
 
-- Number of stories committed vs done: **3** committed, **7** done
+- Number of stories committed vs done: **3** committed, **3** done
 - Total points committed vs done: **7** committed, **7** done
-- Nr of hours planned vs spent (as a team): **60h** planned, **56h 30m** done
+- Nr of hours planned vs spent (as a team): **60h** planned, **58h 30m** done
 
 Our checklist for DoD:
 - [x] Unit Tests passing
@@ -22,26 +22,29 @@ Our checklist for DoD:
 | 2     | 6       | 2      | 11h        | 9h 15m       |
 | 3     | 6       | 2      | 10h        | 8h 35m       |
 
+> place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
+
 - Hours per task average, standard deviation (estimate and actual)
 
 formula Mean: $\frac{\sum_i x_i}{n}$
 
 formula StDev: $\sqrt{\frac{\sum_i(x_i - x_{mean})^2}{n-1}}$
 
-|            | Mean              | StDev          |
-| ---------- | ----------------- | -------------- |
-| Estimation | 1.76 h <=> 1h 46m | 0.48 h <=> 29m |
-| Actual     | 1.42 h <=> 1h 25m | 0.64 h <=> 38m |
+|            | Mean | StDev |
+|------------|------|-------|
+| Estimation |   2.22 h <=> 2h 13m   |   2.02 h <=> 2h 01m    | 
+| Actual     |   2.17 h <=> 2h 10m   |   2.32 h <=> 2h 19m    |
 
 - Total estimation error ratio: sum of total hours spent / sum of total hours effort - 1
 
-  $\frac{\sum_i spent_{task_i}}{\sum_i estimation_{task_i}} - 1$ = $\frac{26.95}{33.5} - 1$ = $-0.196$
-
+    $\frac{\sum_i spent_{task_i}}{\sum_i estimation_{task_i}} - 1$ = $\frac{58.5}{60} - 1$ = $-0.025$ 
+    
 - Absolute relative task estimation error: sum( abs( spent-task-i / estimation-task-i - 1))/n
 
-  $\frac{1}{n}\sum_i^n \left| \frac{spent_{task_i}}{estimation_task_i}-1 \right| $ = $\frac{1}{19} \left| \frac{26.95}{33.5} - 1 \right|$ = $ 0.010$
+    $\frac{1}{n}\sum_i^n \left| \frac{spent_{task_i}}{estimation_task_i}-1 \right| $ = $\frac{1}{27} \left| \frac{58.5}{60} - 1 \right|$ = $ 0.00093$
 
-## QUALITY MEASURES
+  
+## QUALITY MEASURES 
 
 - Unit Testing:
   - Total hours estimated --> 2h 15m
