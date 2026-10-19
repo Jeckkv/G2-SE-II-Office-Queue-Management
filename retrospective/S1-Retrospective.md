@@ -18,11 +18,10 @@ Our checklist for DoD:
 
 | Story | # Tasks | Points | Hours est. | Hours actual |
 | ----- | ------- | ------ | ---------- | ------------ |
+| 0     | 10       | /    | 30h 30m     | 31h 54m       |
 | 1     | 5       | 3      | 8h 30m     | 8h 46m       |
 | 2     | 6       | 2      | 11h        | 9h 15m       |
 | 3     | 6       | 2      | 10h        | 8h 35m       |
-
-> place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
 - Hours per task average, standard deviation (estimate and actual)
 
