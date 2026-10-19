@@ -12,7 +12,7 @@ const callNextStatement = db.prepare(`
   UPDATE tickets
   SET status = 'CALLED',
       counter_id = @counterId,
-      called_at = datetime('now', 'localtime')
+      called_at = strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')
   WHERE id = (
     SELECT t.id
     FROM tickets t
@@ -38,6 +38,15 @@ const callNextStatement = db.prepare(`
 
 const existsStatement = db.prepare("SELECT 1 FROM counters WHERE id = ?");
 
+const getAllStatement = db.prepare(`
+  SELECT c.id, c.number,
+         GROUP_CONCAT(cs.service_id) AS service_ids
+  FROM counters c
+  LEFT JOIN counter_services cs ON cs.counter_id = c.id
+  GROUP BY c.id
+  ORDER BY c.number
+`);
+
 export default class CounterRepository {
   /**
    * @param {number} counterId
@@ -45,6 +54,19 @@ export default class CounterRepository {
    */
   static exists(counterId) {
     return existsStatement.get(counterId) !== undefined;
+  }
+
+  /**
+   * Returns all counters with the list of service IDs each one handles.
+   * Used by the officer page to populate the counter dropdown.
+   * @returns {{ id: number, number: number, serviceIds: number[] }[]}
+   */
+  static getAll() {
+    return getAllStatement.all().map((row) => ({
+      id: row.id,
+      number: row.number,
+      serviceIds: row.service_ids ? row.service_ids.split(",").map(Number) : [],
+    }));
   }
 
   /**

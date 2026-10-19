@@ -2,7 +2,12 @@ import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
 
-const DB_PATH = path.resolve(process.cwd(), "data", "oqm-database.sqlite");
+// DB_PATH env var: use another file (or :memory: for tests).
+// The README already documents this: "With DB_PATH=:memory: the database lives in memory, useful for tests."
+const DB_PATH =
+  process.env.DB_PATH ??
+  path.resolve(process.cwd(), "data", "oqm-database.sqlite");
+
 const SCHEMA_PATH = path.resolve(
   process.cwd(),
   "src",
@@ -12,7 +17,7 @@ const SCHEMA_PATH = path.resolve(
 );
 
 const dbDir = path.dirname(DB_PATH);
-if (!fs.existsSync(dbDir)) {
+if (DB_PATH !== ":memory:" && !fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir);
 }
 
@@ -27,7 +32,8 @@ try {
   const schema = fs.readFileSync(SCHEMA_PATH, "utf8");
   db.exec(schema);
 } catch (error) {
-  console.error(`Failed to create database: ${error.message}`);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`Failed to create database: ${message}`);
 }
 
 export default db;

@@ -16,7 +16,8 @@ export default function seed() {
     const seed = fs.readFileSync(SEED_PATH, "utf8");
     db.exec(seed);
   } catch (error) {
-    console.error(`Failed to seed database: ${error.message}`);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Failed to seed database: ${message}`);
   }
 }
 

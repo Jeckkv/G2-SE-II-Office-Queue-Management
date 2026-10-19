@@ -25,3 +25,8 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Test's reports
+playwright-report/
+test-results/
+playwright/.cache/
